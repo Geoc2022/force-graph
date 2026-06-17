@@ -45,16 +45,16 @@
           rotation: 3 * Math.PI / 2
         },
 
-        { source: 5, target: 6, curvature: 0.5, rotation: Math.PI / 2 },
-        { source: 6, target: 7, curvature: 0.5, rotation: Math.PI },
-        { source: 7, target: 5, curvature: 0.5, rotation: 0 },
+        { source: 5, target: 6, curvature: 0.5 },
+        { source: 6, target: 7, curvature: 0.5 },
+        { source: 7, target: 5, curvature: 0.5 },
       ]
     };
 
     const Graph = new ForceGraph(document.getElementById('graph'))
       .linkDirectionalParticles(2)
       .linkCurvature('curvature')
-      .linkCurveRotation('rotation')
+      .linkSelfCurveRotation('rotation')
       .graphData(gData);
   </script>
 </body>

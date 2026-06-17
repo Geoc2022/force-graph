@@ -71,7 +71,7 @@ export default Kapsule({
     linkLineDash: { triggerUpdate: false, onChange: notifyRedraw },
     linkWidth: { default: 1, triggerUpdate: false, onChange: notifyRedraw },
     linkCurvature: { default: 0, triggerUpdate: false, onChange: notifyRedraw },
-    linkCurveRotation: { default: 0, triggerUpdate: false, onChange: notifyRedraw },
+    linkSelfCurveRotation: { default: 0, triggerUpdate: false, onChange: notifyRedraw },
     linkCanvasObject: { triggerUpdate: false, onChange: notifyRedraw },
     linkCanvasObjectMode: { default: () => 'replace', triggerUpdate: false, onChange: notifyRedraw },
     linkDirectionalArrowLength: { default: 0, triggerUpdate: false, onChange: notifyRedraw },
@@ -197,7 +197,7 @@ export default Kapsule({
         const getWidth = accessorFn(state.linkWidth);
         const getLineDash = accessorFn(state.linkLineDash);
         const getCurvature = accessorFn(state.linkCurvature);
-        const getCurveRotation = accessorFn(state.linkCurveRotation);
+        const getSelfCurveRotation = accessorFn(state.linkSelfCurveRotation);
         const getLinkCanvasObjectMode = accessorFn(state.linkCanvasObjectMode);
 
         const ctx = state.ctx;
@@ -274,7 +274,6 @@ export default Kapsule({
 
         function calcLinkControlPoints(link) {
           const curvature = getCurvature(link);
-          const rotation = getCurveRotation(link) || 0;
 
           if (!curvature) { // straight line
             link.__controlPoints = null;
@@ -292,13 +291,14 @@ export default Kapsule({
             const d = l * curvature; // control point distance
 
             const cp = { // control point
-              x: (start.x + end.x) / 2 + d * Math.cos(a - Math.PI / 2 + rotation),
-              y: (start.y + end.y) / 2 + d * Math.sin(a - Math.PI / 2 + rotation)
+              x: (start.x + end.x) / 2 + d * Math.cos(a - Math.PI / 2),
+              y: (start.y + end.y) / 2 + d * Math.sin(a - Math.PI / 2)
             };
 
             link.__controlPoints = [cp.x, cp.y];
           } else { // Same point, draw a loop
             const d = curvature * 70;
+            const rotation = getSelfCurveRotation(link) || 0;
 
             const cp1 = {
               x: end.x + d * Math.cos(rotation - Math.PI / 2),
